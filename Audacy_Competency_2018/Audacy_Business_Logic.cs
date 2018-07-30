@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+
 namespace Audacy_Competency_2018
 {
     public class Audacy_Business_Logic
@@ -26,25 +27,26 @@ namespace Audacy_Competency_2018
                     if (Regex.IsMatch(inputFileLocation, ".*.txt"))
                     {
                         wholeInputText = System.IO.File.ReadAllText(@inputFileLocation);
+                        //Convert the Seven segment display to readable digits
+                        List<string> finalConvertedDigitList = LED_Digit_Converter.getFinalConvertedDigitStrings(wholeInputText);
                         if (wholeInputText != null)
                         {
                             //Split and add the entires as individual line items
-                            String[] inputArray = Regex.Split(wholeInputText, "\\r\\n");                            
-                            if (isValidInputLines(inputArray))
+                            //String[] inputArray = Regex.Split(wholeInputText, "\\r\\n");                            
+                            if (isValidInputLines(finalConvertedDigitList))
                             {
                                 Console.WriteLine("Output is: ");
-                                for (int index = 0; index < inputArray.Count(); index++)
+                                for (int index = 0; index < finalConvertedDigitList.Count(); index++)
                                 {
-
                                     //Remove any spaces present in the input
-                                    string currentString = inputArray[index].Contains(" ") ?
-                                        inputArray[index].Replace(" ", "") : inputArray[index];
+                                    string currentString = finalConvertedDigitList[index].Contains(" ") ?
+                                        finalConvertedDigitList[index].Replace(" ", "") : finalConvertedDigitList[index];
 
                                     //Check if the input line is a valid input line
-                                    if (!isValidInput(inputArray[index]))
+                                    if (!isValidInput(finalConvertedDigitList[index]))
                                     {
                                         //Add all invalid entries to a list
-                                        invalidInputList.Add(inputArray[index]);
+                                        invalidInputList.Add(finalConvertedDigitList[index]);
                                     }
                                 }
                             }
@@ -92,9 +94,9 @@ namespace Audacy_Competency_2018
             return false;
         }
 
-        public static bool isValidInputLines(string [] inputArray)
+        public static bool isValidInputLines(List<string> inputList)
         {            
-            return inputArray.Count() != 3 ? false : true;
+            return inputList.Count() != 3 ? false : true;
         }
 
         private static void initializeApp()

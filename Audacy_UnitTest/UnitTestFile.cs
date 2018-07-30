@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Audacy_Competency_2018;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Audacy_UnitTest
 {
@@ -38,8 +39,24 @@ namespace Audacy_UnitTest
             validInputList.Add(validInput4);
             for (int index = 0; index < validInputList.Count; index++)
             {
-                Assert.IsFalse(!Audacy_Business_Logic.isValidInput(validInputList[index]));
+                Assert.IsTrue(Audacy_Business_Logic.isValidInput(validInputList[index]));
             }
+        }
+
+        [TestMethod]
+        public void invalidInputLineItemCount()
+        {
+            string invalidInput = "1546\r\n7879709809\r\n68766979798\r\n876769000";
+            string[] invalidInputArray = Regex.Split(invalidInput, "\\r\\n");
+            Assert.IsFalse(Audacy_Business_Logic.isValidInputLines(invalidInputArray));
+        }
+
+        [TestMethod]
+        public void validInputLineItemCount()
+        {
+            string validInput = "1546\r\n7879709809\r\n68766979798";
+            string[] validInputArray = Regex.Split(validInput, "\\r\\n");
+            Assert.IsTrue(Audacy_Business_Logic.isValidInputLines(validInputArray));
         }
     }
 }

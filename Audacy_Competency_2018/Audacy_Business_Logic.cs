@@ -29,21 +29,28 @@ namespace Audacy_Competency_2018
                         if (wholeInputText != null)
                         {
                             //Split and add the entires as individual line items
-                            String[] inputArray = Regex.Split(wholeInputText, "\\r\\n");
-                            Console.WriteLine("Output is: ");
-                            for (int index = 0; index < inputArray.Count(); index++)
+                            String[] inputArray = Regex.Split(wholeInputText, "\\r\\n");                            
+                            if (isValidInputLines(inputArray))
                             {
-
-                                //Remove any spaces present in the input
-                                string currentString = inputArray[index].Contains(" ") ?
-                                    inputArray[index].Replace(" ", "") : inputArray[index];
-
-                                //Check if the input line is a valid input line
-                                if (!isValidInput(inputArray[index]))
+                                Console.WriteLine("Output is: ");
+                                for (int index = 0; index < inputArray.Count(); index++)
                                 {
-                                    //Add all invalid entries to a list
-                                    invalidInputList.Add(inputArray[index]);
+
+                                    //Remove any spaces present in the input
+                                    string currentString = inputArray[index].Contains(" ") ?
+                                        inputArray[index].Replace(" ", "") : inputArray[index];
+
+                                    //Check if the input line is a valid input line
+                                    if (!isValidInput(inputArray[index]))
+                                    {
+                                        //Add all invalid entries to a list
+                                        invalidInputList.Add(inputArray[index]);
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input file as the number of input lines is not equal to 3.");
                             }
                         }
                         else
@@ -83,6 +90,11 @@ namespace Audacy_Competency_2018
                 return true;
             }
             return false;
+        }
+
+        public static bool isValidInputLines(string [] inputArray)
+        {            
+            return inputArray.Count() != 3 ? false : true;
         }
 
         private static void initializeApp()

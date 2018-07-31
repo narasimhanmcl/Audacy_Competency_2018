@@ -46,17 +46,48 @@ namespace Audacy_UnitTest
         [TestMethod]
         public void invalidInputLineItemCount()
         {
-            string invalidInput = "1546\r\n7879709809\r\n68766979798\r\n876769000";
-            string[] invalidInputArray = Regex.Split(invalidInput, "\\r\\n");
-            Assert.IsFalse(Audacy_Business_Logic.isValidInputLines(invalidInputArray));
+            string invalidInput1 = "1546";
+            string invalidInput2 = "7879709809";
+            string invalidInput3 = "68766979798";
+            string invalidInput4 = "876769000";
+            List<string> invalidInputList = new List<string>();
+            invalidInputList.Add(invalidInput1);
+            invalidInputList.Add(invalidInput2);
+            invalidInputList.Add(invalidInput3);
+            invalidInputList.Add(invalidInput4);
+            Assert.IsFalse(Audacy_Business_Logic.isValidInputLines(invalidInputList));
         }
 
         [TestMethod]
         public void validInputLineItemCount()
         {
-            string validInput = "1546\r\n7879709809\r\n68766979798";
-            string[] validInputArray = Regex.Split(validInput, "\\r\\n");
-            Assert.IsTrue(Audacy_Business_Logic.isValidInputLines(validInputArray));
+            string validInput1 = "1546";
+            string validInput2 = "7879709809";
+            string validInput3 = "68766979798";
+            List<string> validInputList = new List<string>();
+            validInputList.Add(validInput1);
+            validInputList.Add(validInput2);
+            validInputList.Add(validInput3);
+            Assert.IsTrue(Audacy_Business_Logic.isValidInputLines(validInputList));
+        }
+
+        [TestMethod]
+        public void validateDigitsFromLines()
+        {
+            string firstString = " _ ";
+            string secondString = "|_|";
+            string thirdString = "|_|";
+            Assert.AreEqual("8", LED_Digit_Converter.determineDigitsFromLines(firstString, secondString, thirdString));
+        }
+
+        [TestMethod]
+        public void validateInvalidDigitsFromLines()
+        {
+            string firstString = "   ";
+            string secondString = "|_|";
+            string thirdString = "   ";
+            //Output should be 4
+            Assert.AreNotEqual("8", LED_Digit_Converter.determineDigitsFromLines(firstString, secondString, thirdString));
         }
     }
 }

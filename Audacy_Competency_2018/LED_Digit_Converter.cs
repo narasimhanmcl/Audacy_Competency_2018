@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Audacy_Competency_2018
 {
-    class LED_Digit_Converter
+    public class LED_Digit_Converter
     {
         public static List<string> getFinalConvertedDigitStrings(string wholeInputText)
         {

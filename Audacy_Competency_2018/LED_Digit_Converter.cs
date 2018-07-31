@@ -55,9 +55,9 @@ namespace Audacy_Competency_2018
                     //the third line indicates the third input entry
                     else
                     {
-                        thirdLineList.Add(inputStringArray[lineItem - 3]);
-                        thirdLineList.Add(inputStringArray[lineItem - 2]);
-                        thirdLineList.Add(inputStringArray[lineItem - 1]);
+                        thirdLineList.Add(inputStringArray[8]);
+                        thirdLineList.Add(inputStringArray[9]);
+                        thirdLineList.Add(inputStringArray[10]);
                     }
                 }
                 repeatCount++;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Audacy_Competency_2018
 {
@@ -17,55 +15,61 @@ namespace Audacy_Competency_2018
             List<string> firstLineList = new List<string>();
             List<string> secondLineList = new List<string>();
             List<string> thirdLineList = new List<string>();
-
-            printInputDate(wholeInputText);
-
-            //Split the whole input into three lined input segments
-            string[] inputStringArray = Regex.Split(wholeInputText, "\\r\\n");
-            for (int index = 0; index < inputStringArray.Count(); index++)
+            try
             {
-                //Find the empty line which indicates the line feed between two input lines
-                if (inputStringArray[index].Replace(" ", "").Equals(""))
-                {
-                    emptySpaceLineIndexList.Add(index);
-                }
-            }
+                printInputDate(wholeInputText);
 
-            //Since there can be only three input lines as per the problem statement
-            //we are limiting the repeat counts to 3
-            int repeatCount = 1;
-            foreach (int lineItem in emptySpaceLineIndexList)
-            {
-                if (repeatCount <= 3)
+                //Split the whole input into three lined input segments
+                string[] inputStringArray = Regex.Split(wholeInputText, "\\r\\n");
+                for (int index = 0; index < inputStringArray.Count(); index++)
                 {
-                    //if the empty line item is 3, then the input must be on line 0, 1 and 2
-                    if (lineItem == 3)
+                    //Find the empty line which indicates the line feed between two input lines
+                    if (inputStringArray[index].Replace(" ", "").Equals(""))
                     {
-                        firstLineList.Add(inputStringArray[0]);
-                        firstLineList.Add(inputStringArray[1]);
-                        firstLineList.Add(inputStringArray[2]);
-                    }
-                    //if the empty line item is 7, then the input must be on line 4, 5 and 6
-                    else if (lineItem == 7)
-                    {
-                        secondLineList.Add(inputStringArray[lineItem - 3]);
-                        secondLineList.Add(inputStringArray[lineItem - 2]);
-                        secondLineList.Add(inputStringArray[lineItem - 1]);
-                    }
-                    //the third line indicates the third input entry
-                    else
-                    {
-                        thirdLineList.Add(inputStringArray[8]);
-                        thirdLineList.Add(inputStringArray[9]);
-                        thirdLineList.Add(inputStringArray[10]);
+                        emptySpaceLineIndexList.Add(index);
                     }
                 }
-                repeatCount++;
+
+                //Since there can be only three input lines as per the problem statement
+                //we are limiting the repeat counts to 3
+                int repeatCount = 1;
+                foreach (int lineItem in emptySpaceLineIndexList)
+                {
+                    if (repeatCount <= 3)
+                    {
+                        //if the empty line item is 3, then the input must be on line 0, 1 and 2
+                        if (lineItem == 3)
+                        {
+                            firstLineList.Add(inputStringArray[0]);
+                            firstLineList.Add(inputStringArray[1]);
+                            firstLineList.Add(inputStringArray[2]);
+                        }
+                        //if the empty line item is 7, then the input must be on line 4, 5 and 6
+                        else if (lineItem == 7)
+                        {
+                            secondLineList.Add(inputStringArray[lineItem - 3]);
+                            secondLineList.Add(inputStringArray[lineItem - 2]);
+                            secondLineList.Add(inputStringArray[lineItem - 1]);
+                        }
+                        //the third line indicates the third input entry
+                        else
+                        {
+                            thirdLineList.Add(inputStringArray[8]);
+                            thirdLineList.Add(inputStringArray[9]);
+                            thirdLineList.Add(inputStringArray[10]);
+                        }
+                    }
+                    repeatCount++;
+                }
+                //Add the strings to the final converted digit list by triaging the lines
+                finalConvertedDigits.Add(triageThelines(firstLineList));
+                finalConvertedDigits.Add(triageThelines(secondLineList));
+                finalConvertedDigits.Add(triageThelines(thirdLineList));
             }
-            //Add the strings to the final converted digit list by triaging the lines
-            finalConvertedDigits.Add(triageThelines(firstLineList));
-            finalConvertedDigits.Add(triageThelines(secondLineList));
-            finalConvertedDigits.Add(triageThelines(thirdLineList));
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception occured in the application with error message: " + e.Message);
+            }
             return finalConvertedDigits;
         }
 
@@ -78,57 +82,65 @@ namespace Audacy_Competency_2018
         /// <returns>The entire line item in a digitally readable format</returns>
         public static string triageThelines(List<string> setOfThreeLines)
         {
-            string test = "";
+            string lineString = "";
+            string numberDetermined = "";
             List<string> firstLineTriageList = new List<string>();
             List<string> secondLineTriageList = new List<string>();
             List<string> thirdLineTriageList = new List<string>();
             int index = 0;
             
-            foreach (string currentRow in setOfThreeLines)
+            try
             {
-                int count = 0;
-                for (int i = 0; i < currentRow.Length; i++)
+                foreach (string currentRow in setOfThreeLines)
                 {
-                    if (count == i)
+                    int count = 0;
+                    for (int i = 0; i < currentRow.Length; i++)
                     {
-                        test = currentRow.Substring(i, 3);
-                        if (index == 0)
+                        if (count == i)
                         {
-                            firstLineTriageList.Add(test);
+                            lineString = currentRow.Substring(i, 3);
+                            if (index == 0)
+                            {
+                                firstLineTriageList.Add(lineString);
+                            }
+                            else if (index == 1)
+                            {
+                                secondLineTriageList.Add(lineString);
+                            }
+                            else
+                            {
+                                thirdLineTriageList.Add(lineString);
+                            }
+
+                            count = count + 4;
                         }
-                        else if (index == 1)
+                    }
+                    index++;
+                }
+
+                //Determine the digits from the triaged lines
+                List<string> digitList = new List<string>();
+                numberDetermined = "";
+                for (int i = 0; i < firstLineTriageList.Count(); i++)
+                {
+                    //Pass the first line triaged three character string along with second and third character triaged strings
+                    string determinedDigit = determineDigitsFromLines(firstLineTriageList[i], secondLineTriageList[i], thirdLineTriageList[i]);
+                    if (determinedDigit != null)
+                    {
+                        if (numberDetermined != "")
                         {
-                            secondLineTriageList.Add(test);
+                            numberDetermined = numberDetermined + determinedDigit;
                         }
                         else
                         {
-                            thirdLineTriageList.Add(test);
+                            numberDetermined = determinedDigit;
                         }
-
-                        count = count + 4;
-                    }
-                }
-                index++;
-            }
-
-            //Determine the digits from the triaged lines
-            List<string> digitList = new List<string>();
-            string numberDetermined = "";
-            for (int i = 0; i < firstLineTriageList.Count(); i++)
-            {
-                //Pass the first line triaged three character string along with second and third character triaged strings
-                string determinedDigit = determineDigitsFromLines(firstLineTriageList[i], secondLineTriageList[i], thirdLineTriageList[i]);
-                if(determinedDigit != null)
-                {
-                    if (numberDetermined != "")
-                    {
-                        numberDetermined = numberDetermined + determinedDigit;
-                    }
-                    else
-                    {
-                        numberDetermined = determinedDigit;
                     }
                 }                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception occured in the application with error message: " + e.Message);
             }
             return numberDetermined;
         }
@@ -143,45 +155,52 @@ namespace Audacy_Competency_2018
         /// <returns>The actual digital string</returns>
         public static string determineDigitsFromLines(string firstLineSegment, string secondLineSegment, string thirdLineSegment)
         {
-            if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("| |") && thirdLineSegment.Equals("|_|"))
+            try
             {
-                return "0";
+                if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("| |") && thirdLineSegment.Equals("|_|"))
+                {
+                    return "0";
+                }
+                else if (firstLineSegment.Equals("   ") && secondLineSegment.Equals("|  ") && thirdLineSegment.Equals("|  "))
+                {
+                    return "1";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals(" _|") && thirdLineSegment.Equals("|_ "))
+                {
+                    return "2";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals(" _|") && thirdLineSegment.Equals(" _|"))
+                {
+                    return "3";
+                }
+                else if (firstLineSegment.Equals("   ") && secondLineSegment.Equals("|_|"))
+                {
+                    return "4";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_ ") && thirdLineSegment.Equals(" _|"))
+                {
+                    return "5";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_ ") && thirdLineSegment.Equals("|_|"))
+                {
+                    return "6";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("  |") && thirdLineSegment.Equals("  |"))
+                {
+                    return "7";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_|") && thirdLineSegment.Equals("|_|"))
+                {
+                    return "8";
+                }
+                else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_|") && thirdLineSegment.Equals(" _|"))
+                {
+                    return "9";
+                }
             }
-            else if (firstLineSegment.Equals("   ") && secondLineSegment.Equals("|  ") && thirdLineSegment.Equals("|  "))
+            catch (Exception e)
             {
-                return "1";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals(" _|") && thirdLineSegment.Equals("|_ "))
-            {
-                return "2";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals(" _|") && thirdLineSegment.Equals(" _|"))
-            {
-                return "3";
-            }
-            else if (firstLineSegment.Equals("   ") && secondLineSegment.Equals("|_|"))
-            {
-                return "4";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_ ") && thirdLineSegment.Equals(" _|"))
-            {
-                return "5";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_ ") && thirdLineSegment.Equals("|_|"))
-            {
-                return "6";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("  |") && thirdLineSegment.Equals("  |"))
-            {
-                return "7";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_|") && thirdLineSegment.Equals("|_|"))
-            {
-                return "8";
-            }
-            else if (firstLineSegment.Equals(" _ ") && secondLineSegment.Equals("|_|") && thirdLineSegment.Equals(" _|"))
-            {
-                return "9";
+                Console.WriteLine("Exception occured in the application with error message: " + e.Message);                
             }
             return null;
         }

@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Audacy_Competency_2018;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Audacy_UnitTest
 {
